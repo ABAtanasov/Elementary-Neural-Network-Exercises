@@ -1,6 +1,15 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Feb 19 10:48:27 2016
+
+@author: Alex
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import odeint
+from numpy.linalg import inv
+
 N = 100
 P = 5
 T = 20
@@ -47,6 +56,8 @@ qs = np.ones(T)
 for t in range(T):
     qs[t] = q(v,V,0)
     update(v,M)
+
+
 
 plt.plot(qs)
     

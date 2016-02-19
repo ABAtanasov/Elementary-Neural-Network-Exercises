@@ -7,6 +7,7 @@ Created on Fri Feb 19 10:11:33 2016
 from __future__ import division
 import numpy as np
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 from scipy.integrate import odeint
 
 N = 100
@@ -38,21 +39,25 @@ def perturb(v,p):
 qs = np.ones(T)
 M = np.zeros((N,N))
 results = np.zeros((Ptot,ptot))
+V = np.array([[sgn(np.random.random_sample()-0.5) for i in range(N)] for j in range(Ptot)])
 
 for P in range(1,Ptot):
     for p in range(0,ptot):
-        V = np.array([[sgn(np.random.random_sample()-0.5) for i in range(N)] for j in range(P)])
         for i in range(N):
             for j in range(N):
                 if i==j: M[i][j] =0
                 else:
-                    M[i][j] = np.sum(V[:,i]*V[:,j])
-                    v = perturb(V[0,:],p/ptot)
+                    M[i][j] = np.sum(V[0:P,i]*V[0:P,j])
+        v = perturb(V[0,:],p/ptot)
         for t in range(T):
             update(v,M)
-        print P,p
+        
         results[P,p]=q(v,V,0)
 
-
-plt.plot(results[4,:])
-    
+X = np.arange(Ptot)
+Y= np.arange(ptot)
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+Y,X = np.meshgrid(Y, X)
+ax.plot_surface(Y,X,results,rstride=1, cstride=1, cmap=cm.coolwarm,
+                       linewidth=0, antialiased=False)
